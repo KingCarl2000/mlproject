@@ -1,19 +1,28 @@
 import logging
 import os
+import tempfile
 from datetime import datetime
 
 # Generate a filename using the current date and time formatted as 'MM_DD_YYYY_HH_MM_SS.log'
 LOG_FILE=f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
 
-# Construct the path for the directory where the log file will be saved.
-# NOTE: This currently appends the log file name to the directory path.
-logs_path=os.path.join(os.getcwd(),"logs",LOG_FILE)
+log_dir_candidates=[
+    os.path.join(os.getcwd(),"logs"),
+    os.path.join(os.getcwd(),"artifacts","logs"),
+    os.path.join(tempfile.gettempdir(),"mlproject_logs"),
+]
 
-# Create the directory structure. 'exist_ok=True' ensures the program doesn't crash if the folder already exists.
-os.makedirs(logs_path,exist_ok=True)
-
-# Construct the final file path for the log file itself by joining the directory path and the file name.
-LOG_FILE_PATH=os.path.join(logs_path,LOG_FILE)
+for logs_path in log_dir_candidates:
+    try:
+        os.makedirs(logs_path,exist_ok=True)
+        LOG_FILE_PATH=os.path.join(logs_path,LOG_FILE)
+        with open(LOG_FILE_PATH,"a",encoding="utf-8"):
+            pass
+        break
+    except OSError:
+        continue
+else:
+    raise OSError("Unable to create a writable log file.")
 
 # Configure the fundamental settings for the logging system
 logging.basicConfig(
