@@ -73,4 +73,4 @@ def predict_datapoint():
 if __name__=="__main__":
     # Run the Flask app on the local development server
     # host="0.0.0.0" maps it to all available IP addresses on the host machine, making it accessible externally if deployed
-    app.run(host="0.0.0.0", debug=True)  # Enable debug mode for development purposes
+    app.run(host="0.0.0.0")
